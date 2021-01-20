@@ -15,6 +15,22 @@ public class Usuario {
 	private String crm;
 	private String endImagem;
 	
+	
+	private String dsGenero;
+	private String dsTipoUsuario;
+	
+	public String getDsGenero() {
+		return dsGenero;
+	}
+	public void setDsGenero(String dsGenero) {
+		this.dsGenero = dsGenero;
+	}
+	public String getDsTipoUsuario() {
+		return dsTipoUsuario;
+	}
+	public void setDsTipoUsuario(String dsTipoUsuario) {
+		this.dsTipoUsuario = dsTipoUsuario;
+	}
 	public Integer getIdUsuario() {
 		return idUsuario;
 	}
