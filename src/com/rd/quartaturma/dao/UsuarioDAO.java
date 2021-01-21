@@ -169,11 +169,14 @@ public class UsuarioDAO {
 				+ "						NR_CPF, "
 				+ "						NR_CRM, "
 				+ "						DS_END_IMG) "
-				+ " VALUES(NULL, ?, 2, ?, ?, ?, ?, ?, ?, ?)";
+				+ " VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sqlInsert);
-			pstmt.setInt(1, usuario.getIdGenero());
+			if(usuario.getIdGenero() == null )
+				pstmt.setNull(1, java.sql.Types.INTEGER);
+			else
+				pstmt.setInt(1, usuario.getIdGenero());
 
 			if(usuario.getIdEspMed() == null)
 				pstmt.setNull(2, java.sql.Types.INTEGER);
@@ -185,7 +188,11 @@ public class UsuarioDAO {
 			else
 				pstmt.setInt(3, usuario.getIdUfCrm());
 			
-			pstmt.setInt(4, usuario.getIdTipoUsuario());
+			if(usuario.getIdTipoUsuario() == null)
+				pstmt.setInt(4, 1);
+			else
+				pstmt.setInt(4, usuario.getIdTipoUsuario());
+			
 			pstmt.setString(5, usuario.getNome());
 			if(usuario.getDtNascimento() == null)
 				pstmt.setNull(6, java.sql.Types.DATE);

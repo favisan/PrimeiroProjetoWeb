@@ -40,26 +40,45 @@ public class UsuarioServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String nome  =  request.getParameter("nome");
-		String cpf  = request.getParameter("cpf");
-		Integer id  = Integer.valueOf(request.getParameter("id"));
-		String acao = request.getParameter("acao");
-		
-		Usuario usuario = new Usuario();
-		usuario.setIdUsuario(id);
-		usuario.setNome(nome);
-		usuario.setCpf(cpf);
-		
 		Connection conn = ConexaoMySql.obterConexao();
 		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
 		
+		String acao = request.getParameter("acao");
+		
 		if(acao.equals("alterar"))
-			usuarioDAO.atualizarUsuario(usuario);
+			this.atualizaUsuario(usuarioDAO, request);
 		else if(acao.equals("novo"))
-			usuarioDAO.inserirUsuario(usuario);
+			this.insereUsuario(usuarioDAO, request);
 		
 		listarUsuarios(request, response);
 	}
+	
+	private void insereUsuario(UsuarioDAO usuarioDAO, HttpServletRequest request) {
+		String nome  =  request.getParameter("nome");
+		String cpf  = request.getParameter("cpf");
+		String id  = request.getParameter("id");
+		
+		Usuario usuario = new Usuario();
+		usuario.setIdUsuario(!"".equals(id) ? Integer.valueOf(id) : null);
+		usuario.setNome(nome);
+		usuario.setCpf(cpf);
+		
+		usuarioDAO.inserirUsuario(usuario);
+	}
+	
+	private void atualizaUsuario(UsuarioDAO usuarioDAO, HttpServletRequest request) {
+		String nome  =  request.getParameter("nome");
+		String cpf  = request.getParameter("cpf");
+		String id  = request.getParameter("id");
+		
+		Usuario usuario = new Usuario();
+		usuario.setIdUsuario(!"".equals(id) ? Integer.valueOf(id) : null);
+		usuario.setNome(nome);
+		usuario.setCpf(cpf);
+		
+		usuarioDAO.atualizarUsuario(usuario);
+	}
+	
 	
 	private void listarUsuarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		Connection conn = ConexaoMySql.obterConexao();
