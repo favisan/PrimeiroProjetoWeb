@@ -26,7 +26,6 @@ public class UsuarioServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String acao = request.getParameter("acao");
 		
-		
 		if(acao == null) {
 			this.listarUsuarios(request, response);
 		}else if(acao.equals("editar")) {
@@ -56,10 +55,8 @@ public class UsuarioServlet extends HttpServlet {
 	private void insereUsuario(UsuarioDAO usuarioDAO, HttpServletRequest request) {
 		String nome  =  request.getParameter("nome");
 		String cpf  = request.getParameter("cpf");
-		String id  = request.getParameter("id");
 		
 		Usuario usuario = new Usuario();
-		usuario.setIdUsuario(!"".equals(id) ? Integer.valueOf(id) : null);
 		usuario.setNome(nome);
 		usuario.setCpf(cpf);
 		
@@ -72,7 +69,7 @@ public class UsuarioServlet extends HttpServlet {
 		String id  = request.getParameter("id");
 		
 		Usuario usuario = new Usuario();
-		usuario.setIdUsuario(!"".equals(id) ? Integer.valueOf(id) : null);
+		usuario.setIdUsuario(Integer.valueOf(id));
 		usuario.setNome(nome);
 		usuario.setCpf(cpf);
 		
@@ -92,7 +89,6 @@ public class UsuarioServlet extends HttpServlet {
 			
 			rd = request.getRequestDispatcher("/pages/exibe-usuarios.jsp");
 			rd.forward(request, response);
-			
 			
 		} catch (SQLException e) {
 			request.setAttribute("erro", "Erro ao consultar lista de usuários");
@@ -127,15 +123,16 @@ public class UsuarioServlet extends HttpServlet {
 		
 	}
 	
-	private void excluirUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+	private void excluirUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
 		
 		Connection conn = ConexaoMySql.obterConexao();
 		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
 		
-		usuarioDAO.excluirUsuario(Integer.valueOf(id));
-		
-		//Listar novamente os usuários
-		listarUsuarios(request, response);
+		boolean retorno = usuarioDAO.excluirUsuario(Integer.valueOf(id));
+		if(retorno)
+			this.listarUsuarios(request, response);
+//		else
+//			//TODO
 	}
 }
