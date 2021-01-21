@@ -33,9 +33,34 @@ public class UsuarioServlet extends HttpServlet {
 			this.editarUsuario(request, response);
 		}else if(acao.equals("remover")){
 			this.excluirUsuario(request, response);
+		}else if(acao.equals("novo")) {
+			RequestDispatcher rd = request.getRequestDispatcher("/pages/novo-usuario.jsp");
+			rd.forward(request, response);
 		}
 	}
 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String nome  =  request.getParameter("nome");
+		String cpf  = request.getParameter("cpf");
+		Integer id  = Integer.valueOf(request.getParameter("id"));
+		String acao = request.getParameter("acao");
+		
+		Usuario usuario = new Usuario();
+		usuario.setIdUsuario(id);
+		usuario.setNome(nome);
+		usuario.setCpf(cpf);
+		
+		Connection conn = ConexaoMySql.obterConexao();
+		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+		
+		if(acao.equals("alterar"))
+			usuarioDAO.atualizarUsuario(usuario);
+		else if(acao.equals("novo"))
+			usuarioDAO.inserirUsuario(usuario);
+		
+		listarUsuarios(request, response);
+	}
+	
 	private void listarUsuarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		Connection conn = ConexaoMySql.obterConexao();
 		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
@@ -58,8 +83,28 @@ public class UsuarioServlet extends HttpServlet {
 		}
 	}
 	
-	private void editarUsuario(HttpServletRequest request, HttpServletResponse response) {
-		//TODO 
+	private void editarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher rd = null;
+		
+		String id = request.getParameter("id");
+		
+		Connection conn = ConexaoMySql.obterConexao();
+		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+		
+		try {
+			Usuario usuario = usuarioDAO.getUsuarioById(Integer.valueOf(id));
+			request.setAttribute("usuario", usuario);
+			
+			rd = request.getRequestDispatcher("/pages/altera-usuario.jsp");
+			rd.forward(request, response);
+			
+		} catch (Exception e) {
+			request.setAttribute("erro", "Erro ao editar usuário");
+			rd = request.getRequestDispatcher("/pages/erro-validacao.jsp");
+			rd.forward(request, response);
+			e.printStackTrace();
+			e.printStackTrace();
+		}
 		
 	}
 	

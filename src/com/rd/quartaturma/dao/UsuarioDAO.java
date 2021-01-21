@@ -262,7 +262,6 @@ public class UsuarioDAO {
 		String sqlUpdate = "UPDATE TB_USUARIO SET "
 				+ "						NM_NOME = ?, " 
 				+ "						NR_CPF = coalesce(?, NR_CPF)"
-				+ "						ID_TIPO_USUARIO = ? "
 				+ " WHERE ID_USUARIO = ?";
 		
 		try {
