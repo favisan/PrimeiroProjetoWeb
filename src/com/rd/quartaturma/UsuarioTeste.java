@@ -17,8 +17,8 @@ public class UsuarioTeste {
 		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
 		
 		try {
-//			testeConsulta(usuarioDAO);
-			testeInsert(usuarioDAO);
+			testeConsulta(usuarioDAO);
+//			testeInsert(usuarioDAO);
 
 		} catch (Exception e) {
 			System.out.println("Erro ao consultar usuários" + e.getMessage());

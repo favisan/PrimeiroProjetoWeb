@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.rd.quartaturma.vo.Usuario;
@@ -170,11 +169,12 @@ public class UsuarioDAO {
 				+ "						NR_CPF, "
 				+ "						NR_CRM, "
 				+ "						DS_END_IMG) "
-				+ " VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " VALUES(NULL, ?, 2, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sqlInsert);
 			pstmt.setInt(1, usuario.getIdGenero());
+
 			if(usuario.getIdEspMed() == null)
 				pstmt.setNull(2, java.sql.Types.INTEGER);
 			else
@@ -199,11 +199,12 @@ public class UsuarioDAO {
 			
 			int qtd = pstmt.executeUpdate();
 			
+			pstmt.close();
+			conn.close();
+			
 			if(qtd > 0)
 				return true;
 			
-			pstmt.close();
-			conn.close();
 		} catch (SQLException e) {
 			System.out.println("Erro ao inserir usuário");
 			e.printStackTrace();
