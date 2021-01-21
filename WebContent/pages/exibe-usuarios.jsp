@@ -13,7 +13,7 @@
 <body>
 	<table>
 	<tr>
-		<th>ID USUARIO</th>
+		<th>ID</th>
 		<th>NOME</th>
 		<th>CPF</th>
 		<th>DT NASCIMENTO</th>
@@ -24,6 +24,8 @@
 					<td>${user.nome}</td>
 					<td>${user.cpf}</td>
 					<td><fmt:formatDate value ="${user.dtNascimento}" pattern= "dd/MM/yyyy"/></td>
+					<%-- <td><a href="/PrimeiroProjetoWeb/usuarios?acao=editar&id=${ user.idUsuario }">editar</a></td> --%>
+					<td><a href="/PrimeiroProjetoWeb/usuarios?acao=remover&id=${ user.idUsuario }">remover</a></td>
 				</tr>
 		</c:forEach>
 	</table>

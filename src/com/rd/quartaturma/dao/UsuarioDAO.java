@@ -258,6 +258,62 @@ public class UsuarioDAO {
 		return false;
 	}
 	
+	public boolean atualizarUsuario(Usuario usuario) {
+		String sqlUpdate = "UPDATE TB_USUARIO SET "
+				+ "						NM_NOME = ?, " 
+				+ "						NR_CPF = coalesce(?, NR_CPF)"
+				+ "						ID_TIPO_USUARIO = ? "
+				+ " WHERE ID_USUARIO = ?";
+		
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sqlUpdate);
+			pstmt.setString(1, usuario.getNome());
+			pstmt.setString(2, usuario.getCpf());
+			pstmt.setInt(3, usuario.getIdUsuario());
+			
+			int quantidadeAtualizados = pstmt.executeUpdate();
+			
+			pstmt.close();
+			conn.close();
+			
+			if(quantidadeAtualizados > 0)
+				return true;
+			else
+				return false;
+			
+		} catch (SQLException e) {
+			System.out.println("Erro ao atualizar usuário");
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+
+	public boolean excluirUsuario(Integer idUsuario) {
+		String sqlDelete = "DELETE FROM TB_USUARIO WHERE ID_USUARIO = ?";
+		
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sqlDelete);
+			pstmt.setInt(1, idUsuario);
+				
+			int quantidadeExcluidos = pstmt.executeUpdate();
+			
+			pstmt.close();
+			conn.close();
+			
+			if(quantidadeExcluidos > 0)
+				return true;
+			else
+				return false;
+			
+		} catch (SQLException e) {
+			System.out.println("Erro ao excluir usuário");
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
 	private void fecharConexao() {
 		try {
 			conn.close();

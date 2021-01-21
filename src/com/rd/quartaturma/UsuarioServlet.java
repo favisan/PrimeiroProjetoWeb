@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.rd.quartaturma.dao.UsuarioDAO;
 import com.rd.quartaturma.vo.Usuario;
 
-@WebServlet("/usuario")
+@WebServlet("/usuarios")
 public class UsuarioServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -24,6 +24,19 @@ public class UsuarioServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String acao = request.getParameter("acao");
+		
+		
+		if(acao == null) {
+			this.listarUsuarios(request, response);
+		}else if(acao.equals("editar")) {
+			this.editarUsuario(request, response);
+		}else if(acao.equals("remover")){
+			this.excluirUsuario(request, response);
+		}
+	}
+
+	private void listarUsuarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		Connection conn = ConexaoMySql.obterConexao();
 		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
 		
@@ -42,9 +55,23 @@ public class UsuarioServlet extends HttpServlet {
 			rd = request.getRequestDispatcher("/pages/erro-validacao.jsp");
 			rd.forward(request, response);
 			e.printStackTrace();
-			e.printStackTrace();
 		}
-	
 	}
-
+	
+	private void editarUsuario(HttpServletRequest request, HttpServletResponse response) {
+		//TODO 
+		
+	}
+	
+	private void excluirUsuario(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		String id = request.getParameter("id");
+		
+		Connection conn = ConexaoMySql.obterConexao();
+		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+		
+		usuarioDAO.excluirUsuario(Integer.valueOf(id));
+		
+		//Listar novamente os usuários
+		listarUsuarios(request, response);
+	}
 }
