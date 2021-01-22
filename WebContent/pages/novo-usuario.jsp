@@ -13,7 +13,6 @@
 	
 		Nome: <input type="text" name="nome" />
 		CPF: <input type="text" name="cpf" />
-		<input type="hidden" name="id"/>
 		<input type="hidden" name="acao" value="novo"/>
 		
 		<input type="submit" value= "Cadastrar"/>

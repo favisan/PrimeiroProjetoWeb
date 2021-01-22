@@ -3,8 +3,10 @@ package com.rd.quartaturma;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.rd.quartaturma.dao.UsuarioDAO;
+import com.rd.quartaturma.entity.UsuarioEntity;
 import com.rd.quartaturma.vo.Usuario;
+
+//import br.com.rd.dao.CrudEntityManager;
+
 
 @WebServlet("/usuarios")
 public class UsuarioServlet extends HttpServlet {
@@ -56,11 +62,20 @@ public class UsuarioServlet extends HttpServlet {
 		String nome  =  request.getParameter("nome");
 		String cpf  = request.getParameter("cpf");
 		
+		//COM JDBC
 		Usuario usuario = new Usuario();
 		usuario.setNome(nome);
 		usuario.setCpf(cpf);
-		
 		usuarioDAO.inserirUsuario(usuario);
+		
+		//COM JPA
+		UsuarioEntity usuarioEntity = new UsuarioEntity();
+		usuarioEntity.setNome(nome);
+		usuarioEntity.setCpf(cpf);
+		EntityManager em = CrudEntityManager.getEntityManager();
+		em.getTransaction().begin();
+		em.persist(usuarioEntity);
+		em.getTransaction().commit();
 	}
 	
 	private void atualizaUsuario(UsuarioDAO usuarioDAO, HttpServletRequest request) {
@@ -78,13 +93,23 @@ public class UsuarioServlet extends HttpServlet {
 	
 	
 	private void listarUsuarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		//COM JDBC
 		Connection conn = ConexaoMySql.obterConexao();
 		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
 		
 		RequestDispatcher rd = null;
 		
 		try {
+			//COM JDBC
 			List<Usuario> usuarios = usuarioDAO.getUsuarios();
+			
+			//COM JPA
+//			EntityManager em = CrudEntityManager.getEntityManager();
+//	        List<UsuarioEntity> usuariosEntity =  em.createNamedQuery("Usuario.findAll", UsuarioEntity.class).getResultList();
+//	        List<Usuario> usuarios = new ArrayList<Usuario>();
+	        //Conversão da lista de UsuarioEntity para lista de Usuario
+
+	        
 			request.setAttribute("users", usuarios);
 			
 			rd = request.getRequestDispatcher("/pages/exibe-usuarios.jsp");
