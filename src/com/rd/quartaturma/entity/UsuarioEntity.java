@@ -19,6 +19,7 @@ public class UsuarioEntity implements Serializable {
 	@Column(name="ID_USUARIO")
 	private BigInteger idUsuario;
 
+	@ManyToOne
 	@JoinColumn(name = "ID_GENERO")
 	private GeneroEntity genero;
 	
@@ -31,7 +32,7 @@ public class UsuarioEntity implements Serializable {
 	@Column(name="ID_TIPO_USUARIO")
 	private BigInteger idTipoUsuario;
 	
-	@Column(name="DS_NOME")
+	@Column(name="NM_NOME")
 	private String nome;
 	
 	@Temporal(TemporalType.DATE)

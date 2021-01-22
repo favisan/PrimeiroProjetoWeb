@@ -1,6 +1,7 @@
 package com.rd.quartaturma;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -63,18 +64,22 @@ public class UsuarioServlet extends HttpServlet {
 		String cpf  = request.getParameter("cpf");
 		
 		//COM JDBC
-		Usuario usuario = new Usuario();
-		usuario.setNome(nome);
-		usuario.setCpf(cpf);
-		usuarioDAO.inserirUsuario(usuario);
+//		Usuario usuario = new Usuario();
+//		usuario.setNome(nome);
+//		usuario.setCpf(cpf);
+//		usuarioDAO.inserirUsuario(usuario);
 		
 		//COM JPA
 		UsuarioEntity usuarioEntity = new UsuarioEntity();
 		usuarioEntity.setNome(nome);
 		usuarioEntity.setCpf(cpf);
+		usuarioEntity.setIdTipoUsuario(BigInteger.valueOf(1));
+		
 		EntityManager em = CrudEntityManager.getEntityManager();
 		em.getTransaction().begin();
+		
 		em.persist(usuarioEntity);
+		
 		em.getTransaction().commit();
 	}
 	
