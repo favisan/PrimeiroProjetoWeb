@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -80,6 +81,8 @@ public class UsuarioServlet extends HttpServlet {
 		
 		em.persist(usuarioEntity);
 		
+		UsuarioEntity usuario = em.find(UsuarioEntity.class, 10);
+		
 		em.getTransaction().commit();
 	}
 	
@@ -88,44 +91,64 @@ public class UsuarioServlet extends HttpServlet {
 		String cpf  = request.getParameter("cpf");
 		String id  = request.getParameter("id");
 		
-		Usuario usuario = new Usuario();
-		usuario.setIdUsuario(Integer.valueOf(id));
-		usuario.setNome(nome);
-		usuario.setCpf(cpf);
+//		Usuario usuario = new Usuario();
+//		usuario.setIdUsuario(Integer.valueOf(id));
+//		usuario.setNome(nome);
+//		usuario.setCpf(cpf);
+//		
+//		usuarioDAO.atualizarUsuario(usuario);
 		
-		usuarioDAO.atualizarUsuario(usuario);
+		EntityManager em = CrudEntityManager.getEntityManager();
+		UsuarioEntity usuarioEntity = em.find(UsuarioEntity.class, new BigInteger(id));
+		usuarioEntity.setNome(nome);
+		usuarioEntity.setCpf(cpf);
+		
+		em.getTransaction().begin();
+		em.merge(usuarioEntity);
+		em.getTransaction().commit();
 	}
 	
 	
 	private void listarUsuarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		//COM JDBC
-		Connection conn = ConexaoMySql.obterConexao();
-		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+//		Connection conn = ConexaoMySql.obterConexao();
+//		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
 		
 		RequestDispatcher rd = null;
 		
-		try {
+//		try {
 			//COM JDBC
-			List<Usuario> usuarios = usuarioDAO.getUsuarios();
+//			List<Usuario> usuarios = usuarioDAO.getUsuarios();
 			
 			//COM JPA
-//			EntityManager em = CrudEntityManager.getEntityManager();
-//	        List<UsuarioEntity> usuariosEntity =  em.createNamedQuery("Usuario.findAll", UsuarioEntity.class).getResultList();
-//	        List<Usuario> usuarios = new ArrayList<Usuario>();
-	        //Conversão da lista de UsuarioEntity para lista de Usuario
-
+			EntityManager em = CrudEntityManager.getEntityManager();
+			Query query = em.createNamedQuery("Usuario.findAll", UsuarioEntity.class);
+			
+	        List<UsuarioEntity> usuariosEntity =  query.getResultList();
 	        
-			request.setAttribute("users", usuarios);
+//	        List<Usuario> usuarios = new ArrayList<Usuario>();
+	        
+//	        for(UsuarioEntity entity : usuariosEntity) {
+//	        	Usuario usuario = new Usuario();
+//	        	usuario.setIdUsuario(entity.getIdUsuario().intValue());
+//	        	usuario.setNome(entity.getNome());
+//	        	usuario.setCpf(entity.getCpf());
+//	        	usuario.setDtNascimento(entity.getDtNascimento());
+//	        	
+//	        	usuarios.add(usuario);
+//	        }
+	        
+	        request.setAttribute("users", usuariosEntity);
 			
 			rd = request.getRequestDispatcher("/pages/exibe-usuarios.jsp");
 			rd.forward(request, response);
 			
-		} catch (SQLException e) {
-			request.setAttribute("erro", "Erro ao consultar lista de usuários");
-			rd = request.getRequestDispatcher("/pages/erro-validacao.jsp");
-			rd.forward(request, response);
-			e.printStackTrace();
-		}
+//		} catch (SQLException e) {
+//			request.setAttribute("erro", "Erro ao consultar lista de usuários");
+//			rd = request.getRequestDispatcher("/pages/erro-validacao.jsp");
+//			rd.forward(request, response);
+//			e.printStackTrace();
+//		}
 	}
 	
 	private void editarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -155,14 +178,24 @@ public class UsuarioServlet extends HttpServlet {
 	
 	private void excluirUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
-		
-		Connection conn = ConexaoMySql.obterConexao();
-		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
-		
-		boolean retorno = usuarioDAO.excluirUsuario(Integer.valueOf(id));
-		if(retorno)
-			this.listarUsuarios(request, response);
+
+		//JDBC
+//		Connection conn = ConexaoMySql.obterConexao();
+//		UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+//		
+//		boolean retorno = usuarioDAO.excluirUsuario(Integer.valueOf(id));
+//		if(retorno)
+//			this.listarUsuarios(request, response);
 //		else
 //			//TODO
+		
+		//JPA
+		EntityManager em = CrudEntityManager.getEntityManager();
+		UsuarioEntity usuarioEntity = em.find(UsuarioEntity.class, new BigInteger(id));
+		em.getTransaction().begin();
+		em.remove(usuarioEntity);
+		em.getTransaction().commit();
+		
+		this.listarUsuarios(request, response);
 	}
 }

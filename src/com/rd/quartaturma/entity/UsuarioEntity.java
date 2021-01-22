@@ -18,7 +18,7 @@ public class UsuarioEntity implements Serializable {
 	@GeneratedValue
 	@Column(name="ID_USUARIO")
 	private BigInteger idUsuario;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "ID_GENERO")
 	private GeneroEntity genero;

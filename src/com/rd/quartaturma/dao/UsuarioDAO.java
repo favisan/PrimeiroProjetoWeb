@@ -286,6 +286,8 @@ public class UsuarioDAO {
 
 		return false;
 	}
+	
+	
 
 	private void fecharConexao() {
 		try {
